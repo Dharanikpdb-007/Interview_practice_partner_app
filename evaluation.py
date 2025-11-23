@@ -1,27 +1,26 @@
-import openai
+from openai import OpenAI
+client = OpenAI()
 
 def evaluate_answers(conversation_history):
-    """Generates final feedback on communication, clarity, depth and improvement points."""
-    
+
     prompt = f"""
-    You are an HR expert. Evaluate the candidate's interview performance based on the transcript below.
-    Provide structured feedback with:
+    You are an HR expert. Evaluate the candidate's interview performance.
+
+    Assess:
     - Communication quality
     - Technical depth
     - Professionalism
-    - Strong points
-    - Weak points
+    - Strengths
+    - Weaknesses
     - Clear improvement suggestions
-    
+
     Transcript:
     {conversation_history}
-
-    Return the feedback in clean bullet-point format.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
-    
-    return response["choices"][0]["message"]["content"]
+
+    return response.choices[0].message.content
