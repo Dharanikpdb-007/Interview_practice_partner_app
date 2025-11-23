@@ -1,6 +1,7 @@
-import openai
-import random
+from openai import OpenAI
 from questions import QUESTION_BANK
+
+client = OpenAI()
 
 class InterviewAgent:
 
@@ -15,18 +16,17 @@ class InterviewAgent:
             q = self.questions[self.index]
             self.index += 1
             return q
-        return "That's all the questions I have. Would you like your feedback now?"
+        return "That's all the questions. Would you like your final feedback?"
 
     def analyze_user_message(self, message):
-        """Agentic behaviour to categorize user type."""
         msg = message.lower()
         if len(msg.strip()) < 3:
             return "confused"
-        if "quick" in msg or "short" in msg:
+        if "short" in msg or "quick" in msg:
             return "efficient"
         if len(msg.split()) > 40:
             return "chatty"
-        if any(k in msg for k in ["asdf", "??!!", "fsdf", "nonsense"]):
+        if any(k in msg for k in ["asdf", "??!!", "nonsense"]):
             return "edge"
         return "normal"
 
@@ -38,11 +38,11 @@ class InterviewAgent:
         if persona == "confused":
             reply = "I sense you're unsure. Could you tell me more about your experience?"
         elif persona == "efficient":
-            reply = "Sure, I’ll keep things concise. Here's your next question: " + self.next_question()
+            reply = "Understood. I'll keep it short. " + self.next_question()
         elif persona == "chatty":
-            reply = "Thanks for the detailed response! To keep us on track, here's the next question: " + self.next_question()
+            reply = "Thank you for the detailed response! Here's the next question: " + self.next_question()
         elif persona == "edge":
-            reply = "That seems off-topic. Let's refocus. " + self.next_question()
+            reply = "That seems off-topic. Let's get back to the interview. " + self.next_question()
         else:
             reply = "Thanks! Here's the next question: " + self.next_question()
 
